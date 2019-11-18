@@ -60,11 +60,13 @@ class Feed extends Component {
         return res.json();
       })
       .then(resData => {
-
-        console.log(resData.posts);
-
         this.setState({
-          posts: resData.posts,
+          posts: resData.posts.map(post => {
+            return {
+              ...post,
+              imagePath: post.imageUrl
+            }
+          }),
           totalPosts: resData.totalItems,
           postsLoading: false
         });
@@ -107,9 +109,6 @@ class Feed extends Component {
   };
 
   finishEditHandler = postData => {
-
-    console.log(postData);
-
     this.setState({
       editLoading: true
     });
@@ -121,7 +120,8 @@ class Feed extends Component {
     let url = SERVER_URL + 'feed/post';
     let method = 'POST';
     if (this.state.editPost) {
-      url = 'URL';
+      url = SERVER_URL + 'feed/post/' + this.state.editPost._id;
+      method = 'PUT';
     }
 
     fetch(url, {
